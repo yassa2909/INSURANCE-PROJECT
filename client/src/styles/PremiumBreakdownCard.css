@@ -1,0 +1,154 @@
+.premium-card {
+  background: #ffffff;
+  border: 1.5px solid rgba(99, 102, 241, 0.3);
+  border-radius: 16px;
+  padding: 20px;
+  max-width: 420px;
+  box-shadow: 0 10px 28px rgba(15, 23, 42, 0.08);
+  animation: premiumFadeIn 0.35s ease-out;
+}
+
+.premium-card.motor {
+  border-color: rgba(245, 158, 11, 0.28);
+}
+
+@keyframes premiumFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.premium-header {
+  background: linear-gradient(135deg, #4f46e5, #7c3aed);
+  color: #ffffff;
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin-bottom: 14px;
+}
+
+.premium-header.motor-header {
+  background: linear-gradient(135deg, #0f766e, #2563eb);
+}
+
+.premium-title {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.premium-quote-id {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 12px;
+  color: #6366f1;
+}
+
+.premium-header .premium-quote-id {
+  color: rgba(255, 255, 255, 0.92);
+  margin-top: 4px;
+}
+
+.premium-section {
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+  padding-top: 12px;
+  margin-top: 12px;
+}
+
+.premium-section-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #6366f1;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.premium-table {
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.premium-row,
+.premium-total-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  padding: 8px 10px;
+  font-size: 13px;
+}
+
+.premium-row:nth-child(odd) {
+  background: rgba(99, 102, 241, 0.04);
+}
+
+.premium-row span,
+.premium-total-row span {
+  color: #475569;
+}
+
+.premium-row strong,
+.premium-total-row strong {
+  color: #1f2937;
+}
+
+.premium-total-row {
+  border-top: 1px dashed rgba(99, 102, 241, 0.35);
+  margin-top: 4px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.premium-total-row span,
+.premium-total-row strong {
+  color: #4f46e5;
+}
+
+.premium-benefits {
+  margin-top: 14px;
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+  padding-top: 12px;
+  display: grid;
+  gap: 6px;
+}
+
+.premium-benefits.motor-benefits div {
+  color: #0f766e;
+}
+
+.motor-addon-list {
+  display: grid;
+  gap: 6px;
+}
+
+.motor-addon-list div {
+  font-size: 13px;
+  color: #1f2937;
+  padding: 8px 10px;
+  border-radius: 10px;
+  background: rgba(15, 118, 110, 0.06);
+}
+
+.premium-benefits div {
+  font-size: 13px;
+  color: #065f46;
+}
+
+.premium-benefits div::before {
+  content: "\2713";
+  color: #10b981;
+  margin-right: 8px;
+  font-weight: 700;
+}
+
+.premium-footer {
+  margin-top: 14px;
+  border-top: 1px solid rgba(15, 23, 42, 0.08);
+  padding-top: 10px;
+  display: grid;
+  gap: 4px;
+  font-size: 12px;
+  color: #6b7280;
+}

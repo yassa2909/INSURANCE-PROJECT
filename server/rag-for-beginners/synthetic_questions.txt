@@ -1,0 +1,137 @@
+
+
+
+# 🧪 1. Basic Understanding Questions (Easy)
+
+These test **simple retrieval**
+
+* What is the main purpose of the Tata AIG MediCare Policy?
+* What does the policy cover in general?
+* What is meant by hospitalization?
+* What is an accident according to the policy?
+* What is a pre-existing disease?
+
+👉 Example source: 
+
+---
+
+# 📚 2. Definition-Based Questions
+
+These test **precise extraction**
+
+* Define “Day Care Treatment”
+* What is meant by “Medical Expenses”?
+* What is “Cashless facility”?
+* What is “Grace Period”?
+* What is “Domiciliary Hospitalization”?
+
+---
+
+# 🏥 3. Benefits-Related Questions (Important)
+
+These test **multi-chunk retrieval**
+
+* What benefits are covered under the policy?
+* What is covered under in-patient treatment?
+* What are pre and post hospitalization expenses?
+* What is the ambulance cover limit?
+* What is the AYUSH benefit?
+
+---
+
+# 📄 4. List-Type Questions (VERY IMPORTANT for RAG)
+
+These test **completeness + multi-chunk synthesis**
+
+* What documents are required to make a claim?
+* List all benefits provided under the policy
+* What are the exclusions in the policy?
+* What are the conditions for bariatric surgery coverage?
+* What are the criteria for a hospital under this policy?
+
+👉 These are the **hardest and most important** for your system
+
+---
+
+# ⚠️ 5. Exclusions Questions (Tricky)
+
+These test **negative filtering + accuracy**
+
+* What is not covered under this policy?
+* Are cosmetic surgeries covered?
+* Is infertility treatment covered?
+* Are experimental treatments covered?
+* Are adventure sports injuries covered?
+
+---
+
+# ⏳ 6. Waiting Period Questions
+
+These test **numerical + policy logic understanding**
+
+* What is the waiting period for pre-existing diseases?
+* What is the 30-day waiting period rule?
+* What is the waiting period for specific diseases?
+
+---
+
+# 🔁 7. Policy Rules & Conditions
+
+These test **deeper understanding**
+
+* What is the renewal policy?
+* What is the grace period for renewal?
+* What happens in case of fraud?
+* What is portability in health insurance?
+* What is migration in this policy?
+
+---
+
+# 💡 8. Scenario-Based Questions (Advanced 🔥)
+
+These test **reasoning + context combination**
+
+* If a person is hospitalized for 3 days, what benefits apply?
+* Can a claim be made for treatment taken at home?
+* What happens if multiple policies are held?
+* Can treatment outside India be covered?
+* What happens if a claim is delayed?
+
+---
+
+# 🎯 9. Evaluation Questions (Best for testing your RAG quality)
+
+Use these to check **accuracy % like we did earlier**
+
+* What documents are required to make a claim?
+* Explain all hospitalization-related benefits
+* List all exclusions related to medical treatments
+* What are all the benefits under Section 2?
+* What conditions must be met for claims approval?
+
+---
+
+# 🧠 Pro Tip (VERY IMPORTANT)
+
+To really test your RAG:
+
+| Question Type | What it tests  |
+| ------------- | -------------- |
+| Simple        | Retrieval      |
+| Definition    | Precision      |
+| List          | Completeness ❗ |
+| Scenario      | Reasoning 🔥   |
+| Exclusion     | Accuracy       |
+
+---
+
+# 🚀 Best 5 Questions to Benchmark Your RAG
+
+If you test only these, you’ll know everything:
+
+1. What documents are required to make a claim?
+2. List all benefits under the policy
+3. What is covered under in-patient treatment?
+4. What are the exclusions in this policy?
+5. What is the waiting period for pre-existing diseases?
+
