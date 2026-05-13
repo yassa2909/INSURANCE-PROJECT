@@ -202,28 +202,29 @@ def detect_question_type(query: str) -> str:
 
 
 def rank_sentences(embed_model, query: str, sentences: Sequence[str]) -> List[str]:
-    from numpy import dot
-    from numpy.linalg import norm
-
-    def cosine(a, b):
-        return float(dot(a, b) / (norm(a) * norm(b) + 1e-8))
+    if not sentences:
+        return []
 
     query_emb = embed_model.get_text_embedding(query)
+    
+    # Filter out irrelevant and empty sentences first to save embedding time
+    candidates = [s.strip() for s in sentences if not is_irrelevant(s) and len(s.strip()) > 10]
+    if not candidates:
+        return []
+
+    # Use batch embedding for much better performance
+    sent_embs = embed_model.get_text_embedding_batch(candidates)
+    
     scored = []
-
-    for s in sentences:
-        if is_irrelevant(s):
-            continue
-
-        emb = embed_model.get_text_embedding(s)
-        score = cosine(query_emb, emb)
+    for s, emb in zip(candidates, sent_embs):
+        score = cosine_similarity(query_emb, emb)
 
         # apply numeric and domain boosts / penalties
         score = boost_numeric(s, score, query)
         score = penalize_definitions(s, score, query)
         score = boost_score(s, score, query)
 
-        scored.append((score, s.strip()))
+        scored.append((score, s))
 
     scored.sort(reverse=True, key=lambda x: x[0])
     return [s for _, s in scored]
@@ -234,31 +235,38 @@ def mmr_select(sentences: Sequence[str], embed_model, query: str, k: int = 4, la
         return []
 
     selected: List[str] = []
+    selected_indices: List[int] = []
     query_emb = embed_model.get_text_embedding(query)
-    sent_embs = [embed_model.get_text_embedding(sentence) for sentence in sentences]
+    
+    # Use batch embedding
+    sent_embs = embed_model.get_text_embedding_batch(list(sentences))
 
     while len(selected) < min(k, len(sentences)):
-        best = None
+        best_idx = -1
         best_score = -1e9
 
         for index, sentence in enumerate(sentences):
-            if sentence in selected:
+            if index in selected_indices:
                 continue
 
             sim_to_query = cosine_similarity(query_emb, sent_embs[index])
+            
+            # Use pre-calculated embeddings for selected sentences
             sim_to_selected = max(
-                [cosine_similarity(sent_embs[index], embed_model.get_text_embedding(chosen)) for chosen in selected],
+                [cosine_similarity(sent_embs[index], sent_embs[idx]) for idx in selected_indices],
                 default=0.0,
             )
             score = lambda_ * sim_to_query - (1 - lambda_) * sim_to_selected
 
             if score > best_score:
-                best = sentence
+                best_idx = index
                 best_score = score
 
-        if best is None:
+        if best_idx == -1:
             break
-        selected.append(best)
+            
+        selected.append(sentences[best_idx])
+        selected_indices.append(best_idx)
 
     return selected
 
@@ -302,8 +310,12 @@ def format_answer(answer: str, sentences: Sequence[str], query: str) -> str:
 
 def build_multi_chunk_answer(query: str, context: str, embed_model) -> tuple[str, List[str]]:
     """Create a complete answer from combined retrieved chunks using semantic ranking and MMR."""
-    sentences = [sentence.strip() for sentence in split_sentences(clean_text(context)) if len(sentence.strip()) > 20]
+    sentences = [sentence.strip() for sentence in split_sentences(clean_text(context)) if len(sentence.strip()) > 30]
     sentences = filter_relevant(sentences, query)
+    
+    # Limit to top 30 sentences to ensure speed on CPU
+    if len(sentences) > 30:
+        sentences = sentences[:30]
 
     if not sentences:
         return ANSWER_FALLBACK, []
@@ -513,7 +525,7 @@ def _init_runtime(
 
     vector_store = QdrantVectorStore(client=client, collection_name=collection)
     index = VectorStoreIndex.from_vector_store(vector_store=vector_store)
-    retriever = index.as_retriever(similarity_top_k=12)  # Increased from 8 to 12 for better coverage
+    retriever = index.as_retriever(similarity_top_k=5)  # Reduced from 12 to 5 for speed
 
     _RAG_RUNTIME["initialized"] = True
     _RAG_RUNTIME["retriever"] = retriever

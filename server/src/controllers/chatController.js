@@ -1,6 +1,6 @@
 const axios = require('axios');
 
-const RAG_API_URL = process.env.RAG_API_URL || 'http://localhost:5001';
+const RAG_API_URL = process.env.RAG_API_URL || 'http://localhost:8001';
 
 /**
  * POST /api/chat

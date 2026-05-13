@@ -43,6 +43,18 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+# Initialize RAG on startup to avoid first-request delay
+@app.on_event("startup")
+async def startup_event():
+    if get_answer:
+        logger.info("Initializing RAG system on startup...")
+        try:
+            # Call with dummy query to trigger _init_runtime()
+            get_answer("health insurance")
+            logger.info("✅ RAG system initialized and ready")
+        except Exception as e:
+            logger.error(f"Failed to initialize RAG on startup: {e}")
+
 # Pydantic models
 class QueryRequest(BaseModel):
     question: str
@@ -204,8 +216,8 @@ if __name__ == "__main__":
     import uvicorn
     import os
     
-    # Allow port configuration via environment variable, default to 5001 (Express expects this)
-    port = int(os.getenv("RAG_PORT", 5001))
+    # Allow port configuration via environment variable, default to 8001
+    port = int(os.getenv("RAG_PORT", 8001))
     
     uvicorn.run(
         app,

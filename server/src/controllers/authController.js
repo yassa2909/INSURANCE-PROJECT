@@ -1,7 +1,7 @@
 const { body, validationResult } = require('express-validator');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const { sendOTP, verifyOTP } = require('../services/twilioService');
+const { sendOTP, verifyOTP } = require('../services/otpService');
 const { findUserByEmail, findUserByPhone, createUser, markUserAsVerified } = require('../models/userModel');
 
 // ─── Validation Rules ───────────────────────────────────────────────────────
@@ -86,7 +86,7 @@ const register = async (req, res) => {
     }
 
     // Trigger OTP (don't create user yet)
-    const sent = await sendOTP(phone);
+    const sent = await sendOTP(phone, email);
 
     const response = { success: true, message: 'OTP sent to your phone.' };
     // In dev/debug mode, `sendOTP` may return the code (when FAKE_TWILIO=true)
@@ -96,8 +96,8 @@ const register = async (req, res) => {
   } catch (err) {
     console.error('❌ Register error:', err);
     let errorMessage = 'Internal server error.';
-    if (err.code === 21608 || err.message.includes('not in the allowed list')) {
-      errorMessage = 'This phone number is not verified in the Twilio Trial Console. Please add it to "Verified Caller IDs" in Twilio Console or upgrade your Twilio account.';
+    if (err.message.includes('Brevo SMS failed')) {
+      errorMessage = 'Failed to send OTP via SMS. Please check the phone number or try again later.';
     }
 
     return res.status(500).json({ 
@@ -133,7 +133,7 @@ const login = async (req, res) => {
 
     if (!user.is_verified) {
       // Re-trigger OTP if not verified
-      const sent = await sendOTP(user.phone);
+      const sent = await sendOTP(user.phone, user.email);
       const response = {
         success: false,
         message: 'Account not verified. OTP sent to your phone.',
@@ -155,8 +155,8 @@ const login = async (req, res) => {
   } catch (err) {
     console.error('Login error:', err);
     let errorMessage = 'Internal server error.';
-    if (err.code === 21608 || err.message.includes('not in the allowed list')) {
-      errorMessage = 'This phone number is not verified in the Twilio Trial Console. Please add it to "Verified Caller IDs" in Twilio Console.';
+    if (err.message.includes('Brevo SMS failed')) {
+      errorMessage = 'Failed to send OTP via SMS. Please check the phone number or try again later.';
     }
     return res.status(500).json({ success: false, message: errorMessage, error: err.message });
   }

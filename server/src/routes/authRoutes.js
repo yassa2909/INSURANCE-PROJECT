@@ -42,7 +42,7 @@ router.post('/auth/verify', verifyValidation, verifyAndRegister);
 // POST /api/auth/send-otp   → Manual resend OTP
 router.post('/auth/send-otp', otpRateLimiter, async (req, res) => {
   const { phone } = req.body;
-  const { sendOTP } = require('../services/twilioService');
+  const { sendOTP } = require('../services/otpService');
   try {
     if (!phone) return res.status(400).json({ success: false, message: 'Phone is required' });
     const sent = await sendOTP(phone);

@@ -18,13 +18,19 @@ if not exist "client" (
     exit /b 1
 )
 
-echo [1/3] Starting RAG Backend (FastAPI) on port 8000...
+echo [1/3] Starting RAG Backend (FastAPI) on port 8001...
 echo.
 cd server\rag-for-beginners
 start "RAG Backend" cmd /k python main.py
 timeout /t 3 /nobreak
 
-echo [2/3] Starting Frontend (React) on port 5173...
+echo [2/3] Starting Express Backend (Node.js) on port 5000...
+echo.
+cd %MAIN_DIR%\server
+start "Express Backend" cmd /k npm run dev
+timeout /t 3 /nobreak
+
+echo [3/3] Starting Frontend (React) on port 5173...
 echo.
 cd %MAIN_DIR%\client
 start "Frontend" cmd /k npm run dev
@@ -36,7 +42,8 @@ echo Services started!
 echo ========================================
 echo.
 echo Frontend:     http://localhost:5173
-echo RAG Backend:  http://localhost:8000
+echo Node Backend: http://localhost:5000
+echo RAG Backend:  http://localhost:8001
 echo.
 echo The chatbot should be ready to use.
 echo Close any of the cmd windows to stop the service.
